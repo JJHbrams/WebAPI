@@ -1,0 +1,41 @@
+function call_lpoint_data(){
+  var xhr = new XMLHttpRequest();
+  xhr.open('get', 'https://192.168.92.106/api/wapi/get_lpoint_all_small', true);
+  
+  forEach(headers, function(value, key) {
+          if (isDefined(value)) {
+              xhr.setRequestHeader(key, value);
+          }
+        });
+
+  xhr.onload = function requestLoaded() {
+    var statusText = xhr.statusText || '';
+    // responseText is the old-school way of retrieving response (supported by IE9)
+    // response/responseType properties were introduced in XHR Level2 spec (supported by IE10)
+    var response = ('response' in xhr) ? xhr.response : xhr.responseText;
+    // normalize IE9 bug (http://bugs.jquery.com/ticket/1450)
+    var status = xhr.status === 1223 ? 204 : xhr.status;
+    // fix status code when it is 0 (0 status is undocumented).
+    // Occurs when accessing file resources or on Android 4.1 stock browser
+    // while retrieving files from application cache.
+    if (status === 0) {
+      status = response ? 200 : urlResolve(url).protocol == 'file' ? 404 : 0;
+    }
+    completeRequest(callback,
+      status,
+      response,
+      xhr.getAllResponseHeaders(),
+      statusText);
+  };
+
+  var requestError = function() {
+    // The response is always empty
+    // See https://xhr.spec.whatwg.org/#request-error-steps and https://fetch.spec.whatwg.org/#concept-network-error
+    completeRequest(callback, -1, null, null, '');
+  };
+
+  xhr.onerror = requestError;
+  xhr.onabort = requestError;
+  xhr.send(null);
+
+}

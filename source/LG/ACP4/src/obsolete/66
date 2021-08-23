@@ -1,0 +1,14 @@
+function callbackLP(){
+  var xhr = new XMLHttpRequest();
+
+  xhr.open('GET', 'https://192.168.92.106/api/wapi/get_lpoint_all_small', true);
+  xhr.onload = function() {
+      console.log('DataCallback')
+      console.log(xhr.response)
+      console.log(xhr.getAllResponseHeaders())
+    }
+  xhr.send();
+}
+
+callbackLP()
+// setInterval(callbackLP(), 500);

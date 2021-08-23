@@ -1,0 +1,11 @@
+function ajax() {
+  console.time('ajax') //시작 지점
+  var xhr = new XMLHttpRequest()
+  xhr.onload = function(evt) {
+    console.log(xhr.getAllResponseHeaders());
+    console.log(xhr.response);
+    console.timeEnd('ajax')
+  }
+  xhr.open('get', 'https://192.168.92.106/api/wapi/get_lpoint_all_small', true)
+  xhr.send(null)// 끝나는 지
+}
